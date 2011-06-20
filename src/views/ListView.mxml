@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" creationComplete="init(event)" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Network by Hand">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable]
+			protected var persons:ArrayCollection;
+			
+			protected function svc_resultHandler(event:ResultEvent):void
+			{
+				var personArray:Array = event.result as Array;
+				persons = new ArrayCollection(personArray);
+				
+			}
+			
+			protected function init(event:FlexEvent):void
+			{
+				svc.list();
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RemoteObject id="svc" destination="ColdFusion" 
+							endpoint="http://centaur.dev/flex2gateway/" 
+							source="hoytstaff.services.personService" result="svc_resultHandler(event)" />
+	</fx:Declarations>
+	<s:List left="10" right="10" top="10" bottom="10" dataProvider="{persons}" labelFunction="getFullName">
+		<fx:Script>
+			<![CDATA[
+				private function getFullName(obj:Object):String{
+					return obj.firstName + " " + obj.lastName; 
+				}	
+			]]>
+		</fx:Script>
+	</s:List>
+</s:View>
